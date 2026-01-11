@@ -26,3 +26,6 @@ coverage/
 
 # Claude Code local settings
 .claude/settings.local.json
+
+# Backup/old files
+docs/audits/FACTORY_AUDIT_REPORT_old.md
