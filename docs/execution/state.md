@@ -39,4 +39,4 @@
 
 ## Notes
 
-_Session notes and observations._
+{{NOTES}}

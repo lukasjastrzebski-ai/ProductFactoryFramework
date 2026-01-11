@@ -1,6 +1,8 @@
 # Implementation Control Manual
 
-Audience: Product Owner  
+> **Authority Note:** This document derives from and elaborates on docs/ai.md, which remains the authoritative source for all AI agent rules.
+
+Audience: Product Owner
 Scope: Governing execution discipline after planning freeze
 
 This manual defines what you MUST enforce while executing tasks.

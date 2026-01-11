@@ -17,6 +17,7 @@
     "deny": [
       "Bash(rm -rf:*)",
       "Bash(git push --force:*)",
+      "Bash(git push:*)",
       "Bash(git reset --hard:*)",
       "Write(specs/**)",
       "Write(architecture/**)",

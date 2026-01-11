@@ -23,6 +23,7 @@ If any conflict exists, STOP.
 ## Outputs (mandatory)
 - docs/execution/reports/TASK-XXX.md
 - docs/execution/state.md updated
+- docs/execution/progress.json updated (tasks_completed, feature status)
 
 ## Step 0: Preflight (mandatory)
 1) Read docs/ai.md.
@@ -133,8 +134,13 @@ Update docs/execution/state.md with:
 - current_phase (if known)
 - notes (optional, short)
 
+Update docs/execution/progress.json with:
+- Increment metrics.tasks_completed
+- Update relevant feature status in features array
+- Update metrics.test_coverage if available
+
 Hard rule:
-- Completion requires state update.
+- Completion requires state update and progress.json update.
 
 ## Step 8: NEXT gate
 After report and state are complete, ask the Product Owner:

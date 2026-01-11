@@ -60,8 +60,8 @@ Any forbidden action requires STOP.
 
 AI agents must follow:
 - docs/execution/task_runner.md
-- docs/execution/implementation_control_manual.md
-- docs/execution/operator_cheat_sheet.md
+- docs/manuals/implementation_control_manual.md
+- docs/manuals/operator_cheat_sheet.md
 
 There are no shortcuts.
 

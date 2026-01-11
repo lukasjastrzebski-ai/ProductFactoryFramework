@@ -102,6 +102,24 @@ These languages work well but have some characteristics that require extra care:
 
 ---
 
+## Backend Language Recommendations (Summary)
+
+For backend services developed with Claude Code:
+
+| Language | Recommendation | Use Case |
+|----------|---------------|----------|
+| **Go** | **Recommended** | Performance-critical, concurrent services |
+| TypeScript/Node | Acceptable | API services, scripting |
+| Python | Acceptable | ML/data pipelines |
+
+Go is the top recommendation for backend because:
+- Simple, explicit syntax reduces agent errors
+- Strong typing catches issues at compile time
+- Fast compilation provides rapid feedback
+- Minimal hidden behavior or "magic"
+
+---
+
 ## Framework Recommendations
 
 ### Backend Frameworks

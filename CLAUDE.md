@@ -72,6 +72,20 @@ If scope changes are required:
 2. Check docs/execution/state.md for current state
 3. Verify `.factory/PLANNING_FROZEN` status
 4. Review docs/execution/task_status.md for pending work
+5. Consider using /clear if resuming after a long break
+
+## Context Hygiene
+
+After NEXT gate approval:
+- Use /clear if context exceeds 50% capacity
+- Re-read this file after /clear
+
+## Complex Task Guidance
+
+For tasks marked [COMPLEX] in task files:
+- Use "think hard" before implementation planning
+- Use "think harder" for architectural decisions
+- Use "ultrathink" for security-critical code
 
 ## If Unsure
 

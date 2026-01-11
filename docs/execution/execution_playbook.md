@@ -125,8 +125,8 @@ At this point, transition to release, monitoring, and lessons learned.
 
 This document works together with:
 - docs/execution/task_runner.md (how to run tasks)
-- docs/execution/implementation_control_manual.md (operator discipline)
-- docs/execution/operator_cheat_sheet.md (day-to-day reference)
+- docs/manuals/implementation_control_manual.md (operator discipline)
+- docs/manuals/operator_cheat_sheet.md (day-to-day reference)
 
 If there is a conflict:
 - task_runner.md overrides this document
