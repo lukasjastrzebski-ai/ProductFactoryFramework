@@ -28,6 +28,26 @@ When sources conflict, obey this order strictly:
 
 Files always override chat and memory.
 
+### Authority Hierarchy Diagram
+
+```mermaid
+flowchart TD
+    A[docs/ai.md<br/>Binding Contract] --> B[specs/, architecture/, plan/<br/>Frozen Specifications]
+    B --> C[docs/execution/*<br/>Execution Guidance]
+    C --> D[Memory & Chat<br/>Context Only - Never Authority]
+
+    A -.->|"Conflicts?"| R{Resolution}
+    R -->|"Higher wins"| A
+
+    style A fill:#c0392b,color:white
+    style B fill:#d35400,color:white
+    style C fill:#2980b9,color:white
+    style D fill:#7f8c8d,color:white
+    style R fill:#27ae60,color:white
+```
+
+**Decision Rule:** When in doubt, check the higher-numbered source. If sources conflict, the lower-numbered source always wins.
+
 ---
 
 ## Allowed AI actions

@@ -82,3 +82,69 @@ jobs:
           done
 
           echo "Gate validation passed"
+
+      - name: Validate MVP Feature Test Plans
+        run: |
+          echo "Checking MVP features have test plans..."
+          MISSING=0
+          for spec in specs/features/*.md; do
+            [ -f "$spec" ] || continue
+            SLUG=$(basename "$spec" .md | sed 's/feature_//')
+            if grep -qi "Status:.*MVP" "$spec" 2>/dev/null; then
+              TEST_PLAN="specs/tests/feature_${SLUG}_test_plan.md"
+              if ! [ -f "$TEST_PLAN" ]; then
+                echo "ERROR: MVP feature '$SLUG' missing test plan at $TEST_PLAN"
+                MISSING=1
+              fi
+            fi
+          done
+          if [ "$MISSING" = "1" ]; then
+            exit 1
+          fi
+          echo "MVP Feature Test Plan validation passed"
+
+      - name: Validate Report Content
+        run: |
+          echo "Validating report content..."
+          if [ -f docs/execution/task_status.md ]; then
+            INVALID=0
+            while IFS="|" read -r task status notes; do
+              task=$(echo "$task" | xargs)
+              status=$(echo "$status" | xargs)
+              if [ "$status" = "COMPLETE" ]; then
+                REPORT="docs/execution/reports/${task}.md"
+                if [ -f "$REPORT" ]; then
+                  if ! grep -q "## Summary" "$REPORT"; then
+                    echo "ERROR: Report $REPORT missing '## Summary' section"
+                    INVALID=1
+                  fi
+                  if ! grep -q "## Tests" "$REPORT"; then
+                    echo "ERROR: Report $REPORT missing '## Tests' section"
+                    INVALID=1
+                  fi
+                  if ! grep -q "## Acceptance criteria" "$REPORT"; then
+                    echo "ERROR: Report $REPORT missing '## Acceptance criteria' section"
+                    INVALID=1
+                  fi
+                fi
+              fi
+            done < <(grep -v "^#" docs/execution/task_status.md | grep -v "^$" | grep -v "^|" || true)
+            if [ "$INVALID" = "1" ]; then
+              exit 1
+            fi
+          fi
+          echo "Report content validation passed"
+
+      - name: Verify Report Signatures (optional)
+        continue-on-error: true
+        run: |
+          echo "Verifying report signatures..."
+          if [ -x tools/sign_report.sh ]; then
+            if [ -d docs/execution/reports ] && ls docs/execution/reports/*.md 1>/dev/null 2>&1; then
+              ./tools/sign_report.sh verify-all || echo "WARNING: Some reports have invalid or missing signatures"
+            else
+              echo "No reports to verify"
+            fi
+          else
+            echo "Signing tool not found, skipping signature verification"
+          fi

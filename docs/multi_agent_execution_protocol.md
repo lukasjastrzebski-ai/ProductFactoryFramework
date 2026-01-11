@@ -92,3 +92,66 @@ Stop and return to single-agent if:
 - QA cannot verify acceptance criteria
 
 Parallelism is a tool, not a goal.
+
+## Git Worktrees for Parallel Execution
+
+Git worktrees provide isolated working directories for each agent, eliminating merge conflicts during active development.
+
+### When to use worktrees
+- Multiple agents working on different slices simultaneously
+- Long-running tasks that would block other work
+- Testing changes in isolation before integration
+
+### Creating worktrees
+
+```bash
+# From main repository, create a worktree for each agent
+git worktree add ../worktrees/contributor-TASK-001 main
+git worktree add ../worktrees/contributor-TASK-002 main
+git worktree add ../worktrees/integrator main
+```
+
+### Naming convention
+```
+worktrees/<ROLE>-<TASK_ID>/
+```
+
+Examples:
+- `worktrees/contributor-TASK-001/`
+- `worktrees/integrator/`
+- `worktrees/qa-review/`
+
+### Integrator workflow with worktrees
+
+1. Contributors work in their own worktrees, committing to feature branches
+2. Integrator pulls feature branches into integrator worktree
+3. Integrator runs full test suite in integrator worktree
+4. Integrator merges to main only after all tests pass
+
+```bash
+# In integrator worktree
+git fetch origin
+git merge origin/feature/TASK-001
+git merge origin/feature/TASK-002
+pnpm test  # Run full suite
+git push origin main  # Only after tests pass
+```
+
+### Cleanup
+
+After parallel execution completes:
+```bash
+# Remove worktrees
+git worktree remove ../worktrees/contributor-TASK-001
+git worktree remove ../worktrees/contributor-TASK-002
+git worktree remove ../worktrees/integrator
+
+# Prune stale worktree references
+git worktree prune
+```
+
+### Worktree rules
+- Each worktree must be on a separate branch (cannot share branches)
+- Do not delete the main repository while worktrees exist
+- Worktrees share the same Git object database (space efficient)
+- Always clean up worktrees after parallel execution ends

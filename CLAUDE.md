@@ -87,6 +87,19 @@ For tasks marked [COMPLEX] in task files:
 - Use "think harder" for architectural decisions
 - Use "ultrathink" for security-critical code
 
+## Quick Commands
+
+| Action | Location |
+|--------|----------|
+| Check state | docs/execution/state.md |
+| Verify freeze | .factory/PLANNING_FROZEN |
+| View pending tasks | docs/execution/task_status.md |
+| Report template | docs/execution/task_report_template.md |
+| Quality gate | docs/quality/quality_gate.md |
+| Route to CR | docs/requests/change_request_flow.md |
+| Route to NF | docs/requests/new_feature_flow.md |
+| Progress tracking | docs/execution/progress.json |
+
 ## If Unsure
 
 - STOP
