@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "product": "",
+  "updated_at": "",
+  "current_phase": "",
+  "features": [
+    {
+      "id": "FEAT-XXX",
+      "name": "",
+      "status": "pending",
+      "tasks": [
+        {
+          "id": "TASK-XXX",
+          "status": "pending",
+          "test_delta": false,
+          "report_path": null
+        }
+      ]
+    }
+  ],
+  "blockers": [],
+  "metrics": {
+    "tasks_completed": 0,
+    "tasks_total": 0,
+    "tasks_blocked": 0,
+    "test_coverage": null
+  }
+}

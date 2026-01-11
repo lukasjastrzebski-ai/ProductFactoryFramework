@@ -1,0 +1,16 @@
+# Gate Approval Files
+
+This directory contains gate approval files for Change Requests (CR) and New Features (NF).
+
+## Naming Convention
+
+- CR approvals: `CR-XXX_APPROVED.md`
+- NF approvals: `NF-XXX_APPROVED.md`
+
+## Required Content
+
+Each approval file must contain:
+- Approval date
+- Approver name
+- Scope confirmation
+- Any conditions

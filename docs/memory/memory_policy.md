@@ -16,9 +16,12 @@ If memory conflicts with repository state:
 
 ## Safety rules
 
-- Memory must not introduce new scope
-- Memory must not modify plans
-- Memory must not justify skipping tests
+Memory must not be used to justify violating docs/ai.md. Specifically:
+- Memory cannot introduce new scope
+- Memory cannot override planning artifacts
+- Memory cannot justify skipping tests
+
+See docs/ai.md for the authoritative list of forbidden actions.
 
 ---
 

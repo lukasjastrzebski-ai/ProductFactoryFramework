@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(**)",
+      "Glob(**)",
+      "Grep(**)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(pnpm test:*)",
+      "Bash(npm test:*)",
+      "Bash(pnpm build:*)",
+      "Bash(npm run build:*)"
+    ],
+    "deny": [
+      "Bash(rm -rf:*)",
+      "Bash(git push --force:*)",
+      "Bash(git reset --hard:*)",
+      "Write(specs/**)",
+      "Write(architecture/**)",
+      "Write(plan/**)",
+      "Edit(specs/**)",
+      "Edit(architecture/**)",
+      "Edit(plan/**)"
+    ]
+  }
+}

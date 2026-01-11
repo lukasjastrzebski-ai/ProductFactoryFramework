@@ -33,3 +33,52 @@ jobs:
               fi
             done < <(grep -v "^#" docs/execution/task_status.md | grep -v "^$" || true)
           fi
+
+      - name: Validate Test Delta for in-progress tasks
+        run: |
+          if [ -f docs/execution/task_status.md ]; then
+            while IFS="|" read -r task status notes; do
+              task=$(echo "$task" | xargs)
+              status=$(echo "$status" | xargs)
+              if [ "$status" = "IN_PROGRESS" ]; then
+                TASK_FILE="plan/tasks/${task}.md"
+                if [ -f "$TASK_FILE" ]; then
+                  if ! grep -q "Test Delta" "$TASK_FILE"; then
+                    echo "ERROR: Task $task missing Test Delta section"
+                    exit 1
+                  fi
+                fi
+              fi
+            done < <(grep -v "^#" docs/execution/task_status.md | grep -v "^$" || true)
+          fi
+          echo "Test Delta validation passed"
+
+      - name: Validate gate approvals for CR/NF execution
+        run: |
+          # Check for any Change Requests in execution without approval
+          for cr in docs/requests/CR-*.md; do
+            [ -f "$cr" ] || continue
+            CR_ID=$(basename "$cr" .md)
+            GATE_FILE="docs/requests/gates/${CR_ID}_APPROVED.md"
+            if ! [ -f "$GATE_FILE" ]; then
+              if grep -q "Status: IN_EXECUTION" "$cr" 2>/dev/null; then
+                echo "ERROR: CR $CR_ID in execution without approved gate"
+                exit 1
+              fi
+            fi
+          done
+
+          # Check for any New Features in execution without approval
+          for nf in docs/requests/NF-*.md; do
+            [ -f "$nf" ] || continue
+            NF_ID=$(basename "$nf" .md)
+            GATE_FILE="docs/requests/gates/${NF_ID}_APPROVED.md"
+            if ! [ -f "$GATE_FILE" ]; then
+              if grep -q "Status: IN_EXECUTION" "$nf" 2>/dev/null; then
+                echo "ERROR: NF $NF_ID in execution without approved gate"
+                exit 1
+              fi
+            fi
+          done
+
+          echo "Gate validation passed"

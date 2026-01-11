@@ -23,7 +23,7 @@ jobs:
       - name: Run unit tests
         run: |
           if [ -f package.json ]; then
-            pnpm test || true
+            pnpm test
           else
             echo "No package.json; skipping tests."
           fi

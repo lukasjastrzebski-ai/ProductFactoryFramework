@@ -38,17 +38,17 @@ In execution mode, Claude MAY:
 
 ## What execution mode forbids
 
-In execution mode, Claude MAY NOT:
-- edit specs/
-- edit architecture/
-- edit plan/
-- add features or change requirements
-- refactor unrelated code
-- skip tests or defer testing
+See docs/ai.md for the authoritative list of forbidden actions.
 
-Any of the above requires a gated lane:
-- Change Request
-- New Feature
+Key constraints for execution mode:
+- No edits to frozen directories (specs/, architecture/, plan/)
+- No scope expansion or requirement changes
+- No test skipping or deferral
+- No refactoring outside task scope
+
+Any forbidden action requires a gated flow:
+- Change Request (docs/requests/change_request_flow.md)
+- New Feature (docs/requests/new_feature_flow.md)
 
 ---
 

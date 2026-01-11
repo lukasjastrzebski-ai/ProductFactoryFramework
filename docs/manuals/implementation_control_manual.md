@@ -26,11 +26,11 @@ You control:
 - when execution stops (STOP)
 - whether work is accepted or rejected
 
-Claude has NO authority to:
-- expand scope
-- skip tests
-- change planning artifacts
-- declare completion without files
+Claude has NO authority to violate docs/ai.md. Key constraints:
+- No scope expansion
+- No test skipping
+- No planning artifact modification
+- No completion without persisted files
 
 ---
 
@@ -63,14 +63,16 @@ If any artifact is missing, the task is NOT complete.
 
 ## Scope enforcement
 
-During execution, Claude may NOT:
-- modify specs/, architecture/, plan/
-- refactor unrelated code
-- add features not in scope
+See docs/ai.md for the authoritative list of forbidden actions.
 
-If scope is wrong:
+Key constraints during execution:
+- Frozen directories (specs/, architecture/, plan/) are read-only
+- Changes must stay within declared task scope
+- Refactoring outside scope is forbidden
+
+If scope violation detected:
 - STOP execution
-- decide between Change Request or New Feature flow
+- Route to Change Request or New Feature flow
 
 ---
 
