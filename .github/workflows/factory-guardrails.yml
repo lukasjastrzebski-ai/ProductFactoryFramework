@@ -1,0 +1,35 @@
+name: factory-guardrails
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  guardrails:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate kickoff complete
+        run: |
+          test -f .factory/KICKOFF_COMPLETE
+
+      - name: Validate planning freeze markers (if execution)
+        run: |
+          if [ -f .factory/RUN_MODE ] && grep -q "EXECUTION" .factory/RUN_MODE; then
+            test -f .factory/STAGE_7_COMPLETE
+            test -f .factory/PLANNING_FROZEN
+          fi
+
+      - name: Validate COMPLETE tasks have reports
+        run: |
+          if [ -f docs/execution/task_status.md ]; then
+            while IFS="|" read -r task status notes; do
+              task=$(echo "$task" | xargs)
+              status=$(echo "$status" | xargs)
+              if [ "$status" = "COMPLETE" ]; then
+                test -f "docs/execution/reports/${task}.md"
+              fi
+            done < <(grep -v "^#" docs/execution/task_status.md | grep -v "^$" || true)
+          fi

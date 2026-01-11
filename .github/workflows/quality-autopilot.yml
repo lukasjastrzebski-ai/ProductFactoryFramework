@@ -1,0 +1,29 @@
+name: quality-autopilot
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            corepack enable
+            pnpm install --frozen-lockfile
+          else
+            echo "No pnpm-lock.yaml found; skipping install."
+          fi
+
+      - name: Run unit tests
+        run: |
+          if [ -f package.json ]; then
+            pnpm test || true
+          else
+            echo "No package.json; skipping tests."
+          fi

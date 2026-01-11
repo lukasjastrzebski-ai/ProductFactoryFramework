@@ -1,0 +1,27 @@
+Factory Missing Files Report
+Generated at: Sun Jan 11 14:00:45 UTC 2026
+---------------------------------
+MISSING: docs/multi_agent_execution_protocol.md
+MISSING: docs/execution/task_runner.md
+MISSING: docs/execution/execution_playbook.md
+MISSING: docs/execution/task_report_template.md
+MISSING: docs/execution/state.md
+MISSING: docs/execution/task_status.md
+MISSING: docs/execution/reports/
+MISSING: docs/testing/test_strategy.md
+MISSING: docs/testing/test_plan_rules.md
+MISSING: docs/requests/new_feature_flow.md
+MISSING: docs/requests/change_request_flow.md
+MISSING: docs/requests/templates/
+MISSING: specs/_templates/
+MISSING: architecture/decisions/
+MISSING: plan/phases/
+MISSING: plan/tasks/
+MISSING: .factory/
+MISSING: .factory/KICKOFF_COMPLETE
+MISSING: .factory/factory_version.txt
+MISSING: tools/
+MISSING: tools/validate_required_files.sh
+MISSING: tools/validate_factory_links.sh
+MISSING: tools/validate_planning_freeze.sh
+---------------------------------
