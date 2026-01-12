@@ -95,17 +95,16 @@ Since both task_runner.md and execution_playbook.md are in docs/execution/, the 
 
 ### 2.3 Permission Configuration
 
-**Location:** .claude/settings.json:20-21
+**Location:** .claude/settings.json:19
 
 ```json
 "deny": [
   "Bash(git push --force:*)",
-  "Bash(git push:*)",
 ```
 
-**Observation:** Denying all `git push` is a conservative security choice. This is appropriate for the template framework but teams instantiating it may want to allow non-force push operations.
+**Observation:** Force push is denied while regular `git push` is allowed. This balances safety (preventing history rewrites) with usability (allowing normal push operations).
 
-**Status:** Not a bug - intentionally conservative. Document in claude_code_setup.md that teams can customize.
+**Status:** Appropriate security posture - denies destructive operations while enabling standard git workflows.
 
 ---
 
