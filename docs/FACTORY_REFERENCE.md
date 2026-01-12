@@ -48,6 +48,8 @@ The `factory-guardrails.yml` workflow validates markers exist as appropriate (so
 | `docs/` | All documentation | No (execution docs updated) |
 | `docs/execution/` | Execution state, reports, playbooks | No |
 | `docs/execution/reports/` | Task completion reports | No |
+| `docs/migration/` | Migration guide for existing projects | No |
+| `docs/migration/templates/` | Migration assessment and baseline templates | No |
 | `docs/quality/` | Quality standards | No |
 | `docs/requests/` | Change and feature request flows | No |
 | `docs/signals/` | Signal definitions | No |
@@ -238,6 +240,11 @@ Skipping regressions is forbidden.
 | Impact Analysis | Change impact analysis | [docs/requests/templates/impact_analysis.md](requests/templates/impact_analysis.md) |
 | Regression Plan | Regression test plan | [docs/requests/templates/regression_plan.md](requests/templates/regression_plan.md) |
 | Execution Gate | Gate approval form | [docs/requests/templates/execution_gate.md](requests/templates/execution_gate.md) |
+| Migration Assessment | Project evaluation for migration | [docs/migration/templates/migration_assessment.md](migration/templates/migration_assessment.md) |
+| Existing Feature Spec | Retroactive feature documentation | [docs/migration/templates/existing_feature_spec.md](migration/templates/existing_feature_spec.md) |
+| Retroactive ADR | Past decision documentation | [docs/migration/templates/retroactive_adr.md](migration/templates/retroactive_adr.md) |
+| Quality Baseline | Quality metrics baseline | [docs/migration/templates/quality_baseline.md](migration/templates/quality_baseline.md) |
+| Migration Readiness | Migration validation checklist | [docs/migration/templates/migration_readiness_checklist.md](migration/templates/migration_readiness_checklist.md) |
 
 ## Validation Tools
 

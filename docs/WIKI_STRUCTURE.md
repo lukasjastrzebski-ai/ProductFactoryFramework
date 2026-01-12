@@ -21,8 +21,21 @@ Content source: Extract from README.md and USER_GUIDE.md
 Includes:
 - Prerequisites
 - Mental model
-- Kickoff process
+- Choosing your path (new vs existing project)
+- Kickoff process (new projects)
+- Link to Migration Guide (existing projects)
 - Link to Planning Guide
+
+### Migration Guide
+
+Content source: docs/migration/migration_guide.md and docs/migration/README.md
+
+For teams adopting the factory on existing codebases:
+- Migration philosophy (document what exists, preserve working code)
+- 5-phase migration process (Assessment, Structure, Artifacts, Quality, Activation)
+- Time estimates (5-13 hours)
+- Migration templates
+- Troubleshooting
 
 ### Planning Guide
 
@@ -133,6 +146,7 @@ Quick navigation to:
 |-----------|-----------------|
 | Home | README.md (summary) |
 | Getting Started | README.md, USER_GUIDE.md (excerpts) |
+| Migration Guide | migration/migration_guide.md, migration/README.md |
 | Planning Guide | USER_GUIDE.md, ideation_playbook.md |
 | Execution Guide | EXECUTION_GUIDE.md |
 | Operator Cheat Sheet | operator_cheat_sheet.md |
@@ -149,6 +163,7 @@ Quick navigation to:
 ```
 Home
 Getting Started
+  Migration Guide (existing projects)
 Planning
   Planning Guide
   Templates Index

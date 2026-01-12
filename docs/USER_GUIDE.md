@@ -2,6 +2,19 @@
 
 Audience: New operators using the Product Factory for the first time
 
+## Choosing Your Path
+
+The factory supports two adoption paths:
+
+| Path | Use Case | Starting Point |
+|------|----------|----------------|
+| **New Project** | Greenfield development, no existing code | Start with Kickoff (this guide) |
+| **Existing Project** | Migrating existing codebase to factory discipline | Start with [Migration Guide](migration/migration_guide.md) |
+
+If you have an existing codebase with working features, use the **Migration Guide** instead of this guide. Migration documents what exists and establishes baselines without requiring code rewrites.
+
+---
+
 ## Prerequisites
 
 Before using this factory:
