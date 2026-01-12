@@ -83,6 +83,12 @@ After NEXT gate approval:
 
 ## Context Engineering
 
+For detailed patterns, see:
+- [Context Compaction Pattern](docs/patterns/context_compaction.md)
+- [Trajectory Management Pattern](docs/patterns/trajectory_management.md)
+- [Initializer Agent Pattern](docs/patterns/initializer_agent.md) (advanced)
+- [Sandboxed Execution Pattern](docs/patterns/sandboxed_execution.md) (advanced)
+
 ### The "Dumb Zone"
 LLM performance degrades around 40% context capacity:
 - Monitor context usage during complex tasks

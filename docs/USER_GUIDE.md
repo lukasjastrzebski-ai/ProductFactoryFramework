@@ -266,6 +266,28 @@ If discipline breaks:
 4. **Restore** - Return to known good state if needed
 5. **Resume** - Only after discipline restored
 
+## Context Management Patterns
+
+Effective use of Claude Code requires managing the context window carefully.
+
+### Available Patterns
+
+| Pattern | Purpose | When to Use |
+|---------|---------|-------------|
+| [Context Compaction](patterns/context_compaction.md) | Compress context to Markdown, start fresh | Context exceeds 40%, mid-task breaks |
+| [Trajectory Management](patterns/trajectory_management.md) | Avoid correction spirals | Claude makes repeated mistakes |
+| [Initializer Agent](patterns/initializer_agent.md) | Bootstrap session with consistent startup | Complex projects, team coordination |
+| [Sandboxed Execution](patterns/sandboxed_execution.md) | Run risky operations in isolation | Untrusted code, security-sensitive tasks |
+
+### Quick Rules
+
+- **The "Dumb Zone"**: LLM performance degrades around 40% context capacity
+- **Trajectory Poisoning**: Repeated corrections teach the model to fail
+- **Sub-agents**: Use for research to keep parent context clean
+- **Mid-task Compaction**: Save state to file, /clear, resume from file
+
+See [CLAUDE.md](../CLAUDE.md#context-engineering) for full context engineering guidance.
+
 ## Quick Start Checklist
 
 Planning:

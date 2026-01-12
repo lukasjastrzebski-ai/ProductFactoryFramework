@@ -29,6 +29,7 @@ Files always override chat and memory.
 | `RUN_MODE` | Mode transition | Contains "PLANNING" or "EXECUTION" |
 | `LAST_KNOWN_GOOD_SHA` | Various | Git SHA of last validated state |
 | `factory_version.txt` | Kickoff | Copied from FACTORY_VERSION |
+| `EXTENSION_ACTIVE` | Extension flow | Extension/customization mode enabled |
 
 ### CI enforcement
 
@@ -48,12 +49,14 @@ The `factory-guardrails.yml` workflow validates markers exist as appropriate (so
 | `docs/` | All documentation | No (execution docs updated) |
 | `docs/execution/` | Execution state, reports, playbooks | No |
 | `docs/execution/reports/` | Task completion reports | No |
+| `docs/execution/research/` | Codebase research outputs (Skill 14) | No |
 | `docs/migration/` | Migration guide for existing projects | No |
 | `docs/migration/templates/` | Migration assessment and baseline templates | No |
 | `docs/quality/` | Quality standards | No |
 | `docs/requests/` | Change and feature request flows | No |
 | `docs/signals/` | Signal definitions | No |
 | `docs/skills/` | Claude Code skills | No |
+| `docs/patterns/` | Context engineering patterns | No |
 | `plan/` | Implementation plan | Yes |
 | `plan/phases/` | Phase definitions | Yes |
 | `plan/tasks/` | Task definitions | Yes |
@@ -83,6 +86,7 @@ Skills are structured operating procedures for Claude Code. They do not replace 
 | 11 - External Doc Import | Parse external tool exports | [skill_11](skills/skill_11_external_doc_import.md) |
 | 12 - Gap Analysis | Validate completeness against factory requirements | [skill_12](skills/skill_12_gap_analysis.md) |
 | 13 - Gap Resolution | Iterate with PO to fill planning gaps | [skill_13](skills/skill_13_gap_resolution.md) |
+| 14 - Codebase Research | Research codebase before complex tasks | [skill_14](skills/skill_14_codebase_research.md) |
 
 ### Skill rules
 
@@ -96,6 +100,26 @@ Skills are structured operating procedures for Claude Code. They do not replace 
 Skills are invoked internally by Claude to maintain discipline. They are not commands the operator issues. The operator issues:
 - Task requests (e.g., "Run TASK-XXX via the task runner")
 - Gate responses (GO, NEXT, STOP, BLOCKED)
+
+## Context Engineering Patterns
+
+Patterns for managing Claude Code context window effectively:
+
+| Pattern | Purpose | Source |
+|---------|---------|--------|
+| Context Compaction | Compress context mid-task, resume from file | [context_compaction](patterns/context_compaction.md) |
+| Trajectory Management | Avoid correction spirals that poison context | [trajectory_management](patterns/trajectory_management.md) |
+| Initializer Agent | Bootstrap session with consistent startup | [initializer_agent](patterns/initializer_agent.md) |
+| Sandboxed Execution | Run risky operations in isolated environment | [sandboxed_execution](patterns/sandboxed_execution.md) |
+
+### Key Concepts
+
+- **The "Dumb Zone"**: LLM performance degrades around 40% context capacity
+- **Trajectory Poisoning**: Repeated corrections teach the model to fail
+- **Sub-agents**: Delegate research to disposable contexts, return summaries only
+- **Mid-task Compaction**: Save progress to `.factory/session_context.md`, /clear, resume
+
+See [CLAUDE.md](../CLAUDE.md#context-engineering) for operational guidance.
 
 ## CI Workflows
 

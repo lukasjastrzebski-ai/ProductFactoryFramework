@@ -37,6 +37,22 @@ If any conflict exists, STOP.
 If planning is frozen (.factory/PLANNING_FROZEN exists):
 - Do not edit specs/, architecture/, plan/ unless operating under an APPROVED gate in docs/requests/.
 
+## Step 0.5: Research phase (for complex tasks)
+
+For tasks marked [COMPLEX] or when unfamiliar with the codebase area:
+
+1) Use Skill 14 (Codebase Research) to understand the relevant code
+2) Delegate research to sub-agents to keep parent context clean
+3) Capture research findings in docs/execution/research/TASK-XXX-research.md
+4) Reference research file in the task report
+
+This phase is optional for simple tasks but recommended for:
+- Tasks touching unfamiliar code paths
+- Cross-cutting changes affecting multiple modules
+- Performance or security-sensitive implementations
+
+See: [Skill 14 - Codebase Research](../skills/skill_14_codebase_research.md)
+
 ## Step 1: Task intake (mandatory)
 Open the task file and extract the following into a short intake summary:
 - Goal
