@@ -81,6 +81,37 @@ After NEXT gate approval:
 - Use /clear if context exceeds 50% capacity
 - Re-read this file after /clear
 
+## Context Engineering
+
+### The "Dumb Zone"
+LLM performance degrades around 40% context capacity:
+- Monitor context usage during complex tasks
+- Use /clear proactively at ~40%, not reactively at 90%
+- Complex tasks require more headroom than simple ones
+
+### Trajectory Management
+If Claude makes repeated mistakes:
+1. STOP corrections immediately (they poison context)
+2. Document what went wrong in a temp file
+3. Use /clear to start fresh
+4. Resume with explicit "avoid X" guidance
+
+Repeated corrections teach the model to fail. Fresh context beats poisoned context.
+
+### Mid-Task Compaction
+For long-running tasks:
+1. Ask Claude to summarize current progress
+2. Save summary to `.factory/session_context.md`
+3. Use /clear
+4. Re-read CLAUDE.md, state.md, and the summary
+5. Continue from summary
+
+### Sub-agents for Context Control
+When using Task tool or parallel agents:
+- Research agents: Find files, return paths only
+- Analysis agents: Understand flow, return summary
+- Keep parent context clean for implementation
+
 ## Complex Task Guidance
 
 For tasks marked [COMPLEX] in task files:
@@ -144,6 +175,27 @@ When resolving gaps:
 - All acceptance criteria must be testable
 - Generate artifacts only after PO confirmation
 - Update resolution_progress.json after each gap
+
+## Skill Reference
+
+| # | Skill | Use When |
+|---|-------|----------|
+| 01 | Context Loader | Session start |
+| 02 | Task Intake | Starting a task |
+| 03 | Test Alignment | Before implementation |
+| 04 | Implementation | During coding |
+| 05 | Run Checks | After coding |
+| 06 | Write Report | Task completion |
+| 07 | Update State | After report |
+| 08 | Next Task Recommendation | After NEXT gate |
+| 09 | CR/NF Router | Scope change detected |
+| 10 | Signal Snapshot | Decision needed |
+| 11 | External Doc Import | Importing from tools |
+| 12 | Gap Analysis | Validating completeness |
+| 13 | Gap Resolution | Resolving planning gaps |
+| 14 | Codebase Research | Before complex tasks |
+
+Full documentation: `docs/skills/`
 
 ## If Unsure
 

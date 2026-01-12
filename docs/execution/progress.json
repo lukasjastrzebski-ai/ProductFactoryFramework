@@ -1,45 +1,13 @@
 {
   "version": "1.0",
-  "product": "ExampleProduct",
-  "updated_at": "2026-01-11T10:00:00Z",
-  "current_phase": "implementation",
-  "features": [
-    {
-      "id": "FEAT-001",
-      "name": "User Authentication",
-      "status": "in_progress",
-      "tasks": [
-        {
-          "id": "TASK-001",
-          "status": "complete",
-          "test_delta": true,
-          "report_path": "docs/execution/reports/TASK-001.md"
-        },
-        {
-          "id": "TASK-002",
-          "status": "in_progress",
-          "test_delta": true,
-          "report_path": null
-        },
-        {
-          "id": "TASK-003",
-          "status": "pending",
-          "test_delta": false,
-          "report_path": null
-        }
-      ]
-    },
-    {
-      "id": "FEAT-002",
-      "name": "Dashboard",
-      "status": "pending",
-      "tasks": []
-    }
-  ],
+  "product": "{{PRODUCT_NAME}}",
+  "updated_at": "",
+  "current_phase": "",
+  "features": [],
   "blockers": [],
   "metrics": {
-    "tasks_completed": 1,
-    "tasks_total": 3,
+    "tasks_completed": 0,
+    "tasks_total": 0,
     "tasks_blocked": 0,
     "test_coverage": null
   }

@@ -108,10 +108,15 @@ jobs:
           echo "Validating report content..."
           if [ -f docs/execution/task_status.md ]; then
             INVALID=0
-            while IFS="|" read -r task status notes; do
-              task=$(echo "$task" | xargs)
-              status=$(echo "$status" | xargs)
-              if [ "$status" = "COMPLETE" ]; then
+            # Extract TASK-XXX entries with COMPLETE status
+            # Handles both plain text and markdown table formats
+            grep -E "TASK-[0-9]+" docs/execution/task_status.md | while read -r line; do
+              # Extract task ID (TASK-XXX pattern)
+              task=$(echo "$line" | grep -oE "TASK-[0-9]+" | head -1)
+              [ -z "$task" ] && continue
+
+              # Check if line contains COMPLETE status
+              if echo "$line" | grep -qi "COMPLETE"; then
                 REPORT="docs/execution/reports/${task}.md"
                 if [ -f "$REPORT" ]; then
                   if ! grep -q "## Summary" "$REPORT"; then
@@ -128,7 +133,7 @@ jobs:
                   fi
                 fi
               fi
-            done < <(grep -v "^#" docs/execution/task_status.md | grep -v "^$" | grep -v "^|" || true)
+            done
             if [ "$INVALID" = "1" ]; then
               exit 1
             fi

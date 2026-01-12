@@ -54,7 +54,7 @@ The framework provides comprehensive scaffolding including template placeholders
 | CLAUDE.md | Complete | Comprehensive with authority order, rules, quick commands |
 | AI Contract (ai.md) | Complete | Template placeholders for product context |
 | Task Runner | Complete | Full GO/NEXT protocol documented |
-| Skills (10 total) | Complete | Context loader through signal snapshot |
+| Skills (13 total) | Complete | Context loader through gap resolution |
 | Quality Gates | Complete | Gate criteria, pass/fail conditions |
 | CI Guardrails | Complete | GitHub workflow with multiple validations |
 | Templates | Complete | Task, feature spec, test plan, report templates |
@@ -299,7 +299,7 @@ The ProductFactoryFramework v10.1 is **APPROVED** for production use as a templa
 - docs/patterns/initializer_agent.md
 - docs/patterns/sandboxed_execution.md
 - docs/multi_agent_execution_protocol.md
-- docs/skills/skill_01_context_loader.md through skill_10_*
+- docs/skills/skill_01_context_loader.md through skill_13_*
 
 ### Manuals
 - docs/manuals/implementation_control_manual.md

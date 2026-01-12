@@ -155,3 +155,73 @@ git worktree prune
 - Do not delete the main repository while worktrees exist
 - Worktrees share the same Git object database (space efficient)
 - Always clean up worktrees after parallel execution ends
+
+## Sub-agents for Context Control
+
+Beyond parallel execution, sub-agents serve a critical role in **context management**.
+
+### Purpose
+
+Keep parent context clean by delegating search/analysis to disposable sub-contexts.
+
+Based on research by Dex Horthy: "Sub-agents are not for anthropomorphizing roles. They are for controlling context."
+
+### Use Cases
+
+#### Research Sub-agent
+
+```
+Parent: "Find where user authentication is implemented"
+Sub-agent:
+  - Searches codebase with grep/glob
+  - Reads relevant files
+  - Traces code flow
+  - Returns: "Authentication in src/auth/: login.ts:45-120, session.ts:20-80"
+Parent: Reads only those specific lines, context stays clean
+```
+
+#### Analysis Sub-agent
+
+```
+Parent: "Understand how the payment flow works"
+Sub-agent:
+  - Reads multiple files
+  - Builds mental model
+  - Returns: "Payment flow: Cart→Checkout→PaymentProvider→Confirmation.
+             Key files: cart.ts, checkout.ts, payment.ts"
+Parent: Has compressed understanding without context bloat
+```
+
+#### Validation Sub-agent
+
+```
+Parent: "Verify tests pass for auth module"
+Sub-agent:
+  - Runs test suite
+  - Captures output
+  - Returns: "17 tests passed, 2 skipped. Coverage: 85%"
+Parent: Gets summary, not verbose test output
+```
+
+### Rules
+
+| Rule | Rationale |
+|------|-----------|
+| Sub-agents return **summaries**, not raw data | Keeps parent context clean |
+| Parent context reserved for implementation | Where high-quality output matters |
+| Use for investigation that would fill >20% context | Threshold for delegation |
+| Sub-agent context is disposable | Don't try to preserve it |
+
+### Anti-patterns
+
+- **Anthropomorphized roles** (no "Frontend Agent", "Backend Agent")
+- **Keeping sub-agent context** after task completes
+- **Having sub-agents return full file contents**
+- **Sub-agents making implementation decisions** (parent decides)
+
+### Integration with Factory
+
+- Use sub-agents during Skill 14 (Codebase Research)
+- Use sub-agents for large codebase exploration
+- Sub-agents still follow factory rules (read-only during research)
+- Reports from sub-agents are internal, not execution reports
