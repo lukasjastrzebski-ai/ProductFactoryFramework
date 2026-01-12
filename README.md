@@ -78,13 +78,31 @@ POST-EXECUTION
   Release, monitoring, and lessons learned
 ```
 
-## Getting Started
+## Quick Start
+
+Choose your path based on your project's current state:
+
+### New Projects (Greenfield)
+
+Use the **Ideation Playbook** to build from scratch:
 
 1. Clone this repository as your project template
 2. Read [docs/ideation_playbook.md](docs/ideation_playbook.md) for the planning process
 3. Complete Stages 0-7 to prepare for execution
 4. After Stage 7 completion, follow [docs/execution/task_runner.md](docs/execution/task_runner.md)
 5. Use [docs/manuals/operator_cheat_sheet.md](docs/manuals/operator_cheat_sheet.md) for day-to-day reference
+
+### Existing Projects (Migration)
+
+Use the **Migration Guide** to adopt the factory on an existing codebase:
+
+1. Read [docs/migration/migration_guide.md](docs/migration/migration_guide.md) for the full process
+2. Complete the [Migration Assessment](docs/migration/templates/migration_assessment.md)
+3. Follow Phases 0-4 to establish factory structure and baselines
+4. Validate with the [Readiness Checklist](docs/migration/templates/migration_readiness_checklist.md)
+5. Begin using the [Task Runner](docs/execution/task_runner.md)
+
+**Migration time estimate:** 5-13 hours depending on project size and scope
 
 ## Key Files
 
@@ -93,7 +111,8 @@ POST-EXECUTION
 | [docs/ai.md](docs/ai.md) | Binding AI contract |
 | [CLAUDE.md](CLAUDE.md) | Session startup summary |
 | [docs/execution/task_runner.md](docs/execution/task_runner.md) | GO/NEXT execution protocol |
-| [docs/ideation_playbook.md](docs/ideation_playbook.md) | Planning stages 0-7 |
+| [docs/ideation_playbook.md](docs/ideation_playbook.md) | Planning stages 0-7 (new projects) |
+| [docs/migration/migration_guide.md](docs/migration/migration_guide.md) | Migration guide (existing projects) |
 | [docs/quality/quality_gate.md](docs/quality/quality_gate.md) | Quality pass/fail criteria |
 
 ## Authority Hierarchy

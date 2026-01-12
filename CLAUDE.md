@@ -40,6 +40,7 @@ Any forbidden action requires STOP.
 - Execution State: docs/execution/state.md
 - AI Contract: docs/ai.md
 - Quality Gate: docs/quality/quality_gate.md
+- Migration Guide: docs/migration/migration_guide.md (for existing projects)
 
 ## Quick Reference
 
