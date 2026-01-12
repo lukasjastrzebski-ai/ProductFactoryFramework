@@ -80,6 +80,9 @@ Skills are structured operating procedures for Claude Code. They do not replace 
 | 08 - Next Task Recommendation | Suggest next action without authorizing | [skill_08](skills/skill_08_next_task_recommendation.md) |
 | 09 - CR/NF Router | Route scope changes to correct flow | [skill_09](skills/skill_09_cr_new_feature_router.md) |
 | 10 - Signal Snapshot and Decision | Generate decision inputs from signals | [skill_10](skills/skill_10_signal_snapshot_and_decision.md) |
+| 11 - External Doc Import | Parse external tool exports | [skill_11](skills/skill_11_external_doc_import.md) |
+| 12 - Gap Analysis | Validate completeness against factory requirements | [skill_12](skills/skill_12_gap_analysis.md) |
+| 13 - Gap Resolution | Iterate with PO to fill planning gaps | [skill_13](skills/skill_13_gap_resolution.md) |
 
 ### Skill rules
 
@@ -255,3 +258,61 @@ Skipping regressions is forbidden.
 | validate_factory_links.sh | Check markdown link validity | [tools/validate_factory_links.sh](../tools/validate_factory_links.sh) |
 | sign_report.sh | Sign/verify execution reports | [tools/sign_report.sh](../tools/sign_report.sh) |
 | generate_signal_snapshot.sh | Generate signal snapshots | [scripts/signals/generate_signal_snapshot.sh](../scripts/signals/generate_signal_snapshot.sh) |
+
+## External Documentation Import
+
+### Supported Tools
+
+| Tool | Parser | Formats |
+|------|--------|---------|
+| Notion | scripts/import/parsers/notion_parser.sh | md, json |
+| Figma | scripts/import/parsers/figma_parser.sh | json, md |
+| Linear | scripts/import/parsers/linear_parser.sh | csv, json |
+
+### Import Scripts
+
+| Script | Purpose | Location |
+|--------|---------|----------|
+| parse_docs.sh | Main import orchestrator | [scripts/import/parse_docs.sh](../scripts/import/parse_docs.sh) |
+| analyze_gaps.sh | Validate against factory requirements | [scripts/import/analyze_gaps.sh](../scripts/import/analyze_gaps.sh) |
+
+### Gap Severities
+
+| Severity | Icon | Meaning | Can Skip? |
+|----------|------|---------|-----------|
+| BLOCKING | 🔴 | Cannot proceed without | No (exceptional cases only) |
+| HIGH | 🟠 | Should resolve | Yes, with justification |
+| MEDIUM | 🟡 | Recommended | Yes |
+| LOW | 🟢 | Optional | Yes |
+
+### Generated Reports
+
+| Report | Location |
+|--------|----------|
+| Import report | docs/import/validation/import_report.md |
+| Gap analysis | docs/import/validation/gap_analysis.md |
+| Resolution progress | docs/import/validation/resolution_progress.json |
+
+### Import Directory Structure
+
+```
+docs/import/
+├── README.md
+├── config.json
+├── sources/          # Place exported files here
+│   ├── notion/
+│   ├── figma/
+│   ├── linear/
+│   └── other/
+├── parsed/           # Auto-generated parsed content
+├── validation/       # Gap analysis reports
+└── templates/        # Export guides per tool
+```
+
+### Related Documentation
+
+- [Import System README](import/README.md)
+- [Gap Analysis Guide](import/validation/gap_analysis_guide.md)
+- [Notion Export Guide](import/templates/notion_export_guide.md)
+- [Figma Export Guide](import/templates/figma_export_guide.md)
+- [Linear Export Guide](import/templates/linear_export_guide.md)

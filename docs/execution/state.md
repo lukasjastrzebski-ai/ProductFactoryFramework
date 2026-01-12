@@ -4,7 +4,7 @@
 
 | Field | Value |
 |-------|-------|
-| updated_at | 2026-01-11 |
+| updated_at | |
 | current_phase | |
 
 ---
@@ -13,10 +13,6 @@
 
 | Task ID | Status | Report Path | Completed At |
 |---------|--------|-------------|--------------|
-|         |        |             |              |
-|         |        |             |              |
-|         |        |             |              |
-|         |        |             |              |
 |         |        |             |              |
 
 ---
@@ -39,4 +35,3 @@
 
 ## Notes
 
-{{NOTES}}

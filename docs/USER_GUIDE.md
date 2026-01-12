@@ -15,6 +15,79 @@ If you have an existing codebase with working features, use the **Migration Guid
 
 ---
 
+## Importing External Documentation
+
+If you have existing documentation in external tools (Notion, Figma, Linear), you can import it to accelerate planning.
+
+### Supported Tools
+
+| Tool | Content Types | Export Format |
+|------|---------------|---------------|
+| Notion | Vision, features, requirements | Markdown, JSON |
+| Figma | UI specs, components | JSON, Markdown |
+| Linear | Issues, epics, tasks | CSV, JSON |
+
+### Import Process
+
+#### Step 1: Export from External Tools
+
+Follow the guides in `docs/import/templates/`:
+- [Notion Export Guide](import/templates/notion_export_guide.md)
+- [Figma Export Guide](import/templates/figma_export_guide.md)
+- [Linear Export Guide](import/templates/linear_export_guide.md)
+
+#### Step 2: Place Exports
+
+```
+docs/import/sources/
+├── notion/     # Your Notion exports
+├── figma/      # Your Figma exports
+└── linear/     # Your Linear exports
+```
+
+#### Step 3: Run Import
+
+```bash
+./scripts/import/parse_docs.sh
+```
+
+#### Step 4: Analyze Gaps
+
+```bash
+./scripts/import/analyze_gaps.sh
+```
+
+#### Step 5: Review Gap Report
+
+Open `docs/import/validation/gap_analysis.md`
+
+#### Step 6: Resolve Gaps with Claude
+
+Tell Claude:
+```
+Help me resolve the planning gaps
+```
+
+Claude will guide you through each gap, asking clarifying questions and generating factory artifacts from your responses.
+
+### Gap Resolution Commands
+
+| Command | Purpose |
+|---------|---------|
+| `FILL: [gap-id] [content]` | Provide content for a specific gap |
+| `SKIP: [gap-id] [reason]` | Skip a gap with justification |
+| `STATUS` | Check resolution progress |
+| `PROCEED` | Attempt to continue to next phase |
+
+### After Import
+
+Once gaps are resolved:
+1. Review generated artifacts in specs/, docs/product/, architecture/
+2. Run execution readiness check
+3. Proceed to execution phase
+
+---
+
 ## Prerequisites
 
 Before using this factory:

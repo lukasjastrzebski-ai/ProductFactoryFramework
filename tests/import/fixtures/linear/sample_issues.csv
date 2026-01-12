@@ -1,0 +1,4 @@
+Title,Description,Labels,Priority,Status,Acceptance Criteria
+User Authentication,Implement user login and registration,mvp;feature:auth,High,Backlog,"Users can register with email; Users can login with password"
+Dashboard View,Create main dashboard with deployment cards,mvp;feature:dashboard,High,Backlog,"Shows active deployments; Filters by environment"
+Rollback Feature,Allow users to rollback deployments,feature:rollback,Medium,Backlog,"One-click rollback; Confirmation dialog"

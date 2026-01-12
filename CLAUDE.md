@@ -101,6 +101,50 @@ For tasks marked [COMPLEX] in task files:
 | Route to NF | docs/requests/new_feature_flow.md |
 | Progress tracking | docs/execution/progress.json |
 
+## External Documentation Import
+
+When PO has existing documentation in external tools:
+
+### Import Flow
+
+```
+Place exports → Parse → Analyze gaps → Resolve with PO → Generate artifacts
+```
+
+### Import Commands
+
+| Action | Command |
+|--------|---------|
+| Parse imports | `./scripts/import/parse_docs.sh` |
+| Analyze gaps | `./scripts/import/analyze_gaps.sh` |
+| View gaps | `docs/import/validation/gap_analysis.md` |
+| Resolve gaps | PO says "Help me resolve the planning gaps" |
+
+### Gap Resolution Protocol
+
+When resolving gaps:
+1. Present gaps by severity (BLOCKING first)
+2. Ask specific, answerable questions
+3. Validate responses are actionable
+4. Generate factory artifacts from responses
+5. Track progress in resolution_progress.json
+
+### PO Commands During Resolution
+
+| Command | Action |
+|---------|--------|
+| `FILL: [id] [content]` | Provide gap content |
+| `SKIP: [id] [reason]` | Skip with justification |
+| `STATUS` | Show progress |
+| `PROCEED` | Try to continue |
+
+### Rules
+
+- BLOCKING gaps must be resolved before execution
+- All acceptance criteria must be testable
+- Generate artifacts only after PO confirmation
+- Update resolution_progress.json after each gap
+
 ## If Unsure
 
 - STOP

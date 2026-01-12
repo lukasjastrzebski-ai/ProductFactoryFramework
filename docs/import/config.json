@@ -1,0 +1,46 @@
+{
+  "version": "1.0",
+  "supported_tools": {
+    "notion": {
+      "formats": ["md", "json"],
+      "content_types": ["vision", "features", "requirements", "stories"],
+      "parser": "scripts/import/parsers/notion_parser.sh"
+    },
+    "figma": {
+      "formats": ["json", "md"],
+      "content_types": ["ui_specs", "components", "design_system"],
+      "parser": "scripts/import/parsers/figma_parser.sh"
+    },
+    "linear": {
+      "formats": ["csv", "json"],
+      "content_types": ["issues", "epics", "milestones", "acceptance_criteria"],
+      "parser": "scripts/import/parsers/linear_parser.sh"
+    }
+  },
+  "content_mapping": {
+    "vision": "docs/product/vision.md",
+    "strategy": "docs/product/strategy.md",
+    "metrics": "docs/product/metrics.md",
+    "risks": "docs/product/risks.md",
+    "personas": "docs/product/personas.md",
+    "journeys": "docs/product/journeys.md",
+    "features": "specs/features/",
+    "test_plans": "specs/tests/",
+    "architecture": "architecture/system.md",
+    "decisions": "architecture/decisions/",
+    "tasks": "plan/tasks/",
+    "phases": "plan/phases/"
+  },
+  "validation": {
+    "stage_requirements": {
+      "0": ["problem_statement", "target_user", "assumptions"],
+      "1": ["vision", "strategy", "metrics", "risks"],
+      "2": ["definition", "personas", "journeys", "non_goals"],
+      "3": ["features", "acceptance_criteria", "mvp_identification"],
+      "4": ["system_architecture", "data_model", "integrations"],
+      "5": ["roadmap", "phases", "tasks", "test_delta"],
+      "6": ["readiness_checklist"],
+      "7": ["ai_contract", "planning_freeze"]
+    }
+  }
+}

@@ -104,6 +104,19 @@ Use the **Migration Guide** to adopt the factory on an existing codebase:
 
 **Migration time estimate:** 5-13 hours depending on project size and scope
 
+### Starting with Existing Documentation
+
+If you have documentation in Notion, Figma, Linear, or other tools:
+
+1. Export and place in `docs/import/sources/`
+2. Run `./scripts/import/parse_docs.sh`
+3. Run `./scripts/import/analyze_gaps.sh`
+4. Tell Claude: "Help me resolve the planning gaps"
+5. Iterate until all blocking gaps are resolved
+6. Proceed to execution readiness
+
+See [External Documentation Import](docs/import/README.md) for details.
+
 ## Key Files
 
 | File | Purpose |
