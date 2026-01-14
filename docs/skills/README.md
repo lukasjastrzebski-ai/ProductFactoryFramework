@@ -23,6 +23,23 @@ They are invoked internally by Claude to stay disciplined.
 | 13 | [Gap Resolution](skill_13_gap_resolution.md) | Iterate with PO to fill planning gaps |
 | 14 | [Codebase Research](skill_14_codebase_research.md) | On-demand research for complex tasks |
 
+## v20 Role-Specific Skills
+
+These skills are used in v20 autonomous mode by specific roles.
+
+### Product Owner Skills
+
+| # | Skill | Purpose |
+|---|-------|---------|
+| PO-01 | [Plan Validator](skill_po_plan_validator.md) | Validate implementation plans before GO |
+| PO-02 | [Report Reviewer](skill_po_report_reviewer.md) | Review completion reports before NEXT |
+
+### Delivery Director Skills
+
+| # | Skill | Purpose |
+|---|-------|---------|
+| DD-01 | [Command Handler](skill_dd_command_handler.md) | Process DD commands (STATUS, PAUSE, etc.) |
+
 ## Rules
 
 - Skills never expand scope
