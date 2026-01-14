@@ -1,6 +1,6 @@
 # AI Agent Contract (docs/ai.md)
 
-This document is the binding contract between the Product Owner and AI agents (Claude Code).
+This document is the binding contract between the Delivery Director, Product Owner (AI), and Task Agents (AI).
 If an AI action violates this document, it is invalid.
 
 This file is finalized at Stage 7 and frozen for execution.
@@ -14,6 +14,38 @@ Core Problem: {{CORE_PROBLEM}}
 Target User: {{TARGET_USER}}
 
 These placeholders are populated during Kickoff and must not be changed afterward.
+
+---
+
+## v20 Role Hierarchy
+
+ProductFactoryFramework v20 introduces a three-tier role hierarchy:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│              DELIVERY DIRECTOR (Human)                       │
+│                   Ultimate Authority                         │
+│      Strategic oversight, external escalations only          │
+└─────────────────────────────┬───────────────────────────────┘
+                              │
+                              │ Reports & Escalations
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│              PRODUCT OWNER (Claude Code)                     │
+│                  Execution Authority                         │
+│   Autonomous GO/NEXT gates, validation, agent orchestration │
+└─────────────────────────────┬───────────────────────────────┘
+                              │
+                              │ Task Assignments
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│              TASK AGENTS (Claude Code Workers)               │
+│                  Implementation Only                         │
+│         Execute assigned tasks, report to PO                 │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Role contracts:** See `docs/roles/` for detailed role definitions.
 
 ---
 
@@ -50,18 +82,61 @@ flowchart TD
 
 ---
 
-## Allowed AI actions
+## Allowed Actions by Role
 
-AI agents MAY:
-- read all repository files
-- implement tasks defined in plan/tasks/
-- write tests defined by Feature Test Plans and Task Test Delta
-- write execution reports and update execution state
-- recommend next tasks (without authorizing them)
+### Delivery Director (Human)
+
+DD MAY:
+- Issue commands to PO (STATUS, PAUSE, RESUME, ABORT, etc.)
+- Respond to escalations with decisions or credentials
+- Override any PO decision
+- Skip blocked tasks
+- Approve phases and scope changes
+
+DD MAY NOT:
+- Directly manage Task Agents (must go through PO)
+- Modify planning artifacts without proper flow
+
+### Product Owner (AI Orchestrator)
+
+PO MAY:
+- Read all repository files
+- Analyze and validate implementation plans
+- Issue GO gates after validation
+- Review completion reports
+- Issue NEXT gates or FIX directives
+- Spawn and terminate Task Agents
+- Update execution state
+- Escalate external dependencies to DD
+- Generate reports for DD
+
+PO MAY NOT:
+- Approve scope changes (route to DD via CR/NF)
+- Handle external account setup (escalate to DD)
+- Make strategic pivots without DD approval
+- Continue on BLOCKING escalations
+- Override DD decisions
+
+### Task Agents (AI Workers)
+
+Agents MAY:
+- Read all repository files
+- Implement assigned task within scope
+- Write tests per Test Delta
+- Create files within authorized scope
+- Report progress and completion to PO
+
+Agents MAY NOT:
+- Implement without GO from PO
+- Touch files outside authorized list
+- Contact DD directly
+- Expand scope beyond assignment
+- Modify specs, architecture, or plan
+- Merge to main branch
 
 ---
 
-## Forbidden AI actions
+## Forbidden AI Actions (All Roles)
 
 AI agents MUST NOT:
 - invent requirements
@@ -76,18 +151,46 @@ Any forbidden action requires STOP.
 
 ---
 
-## Execution discipline
+## Execution Modes
 
-AI agents must follow:
+### v20 Autonomous Mode
+
+When `.factory/V20_MODE` exists:
+- PO operates autonomously
+- GO/NEXT gates issued by PO (not DD)
+- DD involved only for escalations and phase approval
+- Parallel agent execution enabled by default
+
+### v10.x Compatibility Mode
+
+When `.factory/V20_MODE` does not exist:
+- Legacy single-agent execution
+- GO/NEXT gates require human approval
+- DD acts as traditional Product Owner
+
+---
+
+## Execution Discipline
+
+### Product Owner Must Follow
+
 - docs/execution/task_runner.md
+- docs/execution/po_startup.md
+- docs/execution/po_go_gate.md
+- docs/execution/po_next_gate.md
 - docs/manuals/implementation_control_manual.md
-- docs/manuals/operator_cheat_sheet.md
+
+### Task Agents Must Follow
+
+- docs/execution/agent_task_runner.md
+- docs/execution/task_assignment.md
+- Task-specific scope from assignment JSON
 
 There are no shortcuts.
 
 ---
 
-## Planning freeze
+## Planning Freeze
 
 If .factory/PLANNING_FROZEN exists:
 - specs/, architecture/, plan/ are frozen
@@ -97,40 +200,73 @@ Violations invalidate execution.
 
 ---
 
-## Change handling
+## Change Handling
 
 If scope changes are required:
 - STOP execution
-- route to:
+- PO routes to:
   - docs/requests/change_request_flow.md
   - docs/requests/new_feature_flow.md
+- DD approves change gate
+- Only then continue
 
-AI agents must not continue until a gate is APPROVED.
-
----
-
-## Parallel execution
-
-Parallel execution is allowed only if:
-- docs/multi_agent_execution_protocol.md conditions are met
-- a parallel plan exists
-
-Otherwise, default to single-agent execution.
+AI agents must not continue until a gate is APPROVED by DD.
 
 ---
 
-## Quality and tests
+## Parallel Execution
 
-AI agents must:
-- enforce Feature Test Plans
-- enforce Task Test Delta
-- run and report tests
+In v20 mode:
+- Parallel execution is the default
+- PO manages task parallelization
+- Each agent works in isolated git worktree
+- PO controls merge order
+
+Requirements:
+- Dependency analysis complete
+- No file ownership conflicts
+- Test isolation maintained
+
+---
+
+## Escalation Protocol
+
+PO MUST escalate to DD when:
+- External account needed (Stripe, Convex, etc.)
+- Payment required (API keys with cost)
+- Legal/compliance action needed
+- Credentials required
+- Strategic decision needed
+- Quality at significant risk
+
+PO MUST NOT escalate for:
+- Internal task failures (handle with FIX cycle)
+- Test failures (retry or mark BLOCKED)
+- Dependency ordering (resequence internally)
+
+---
+
+## Quality and Tests
+
+### Product Owner Must
+
+- Validate Test Delta coverage before GO
+- Verify test execution in reports
+- Reject reports with failing tests
+- Monitor quality baseline
+
+### Task Agents Must
+
+- Execute all Test Delta items
+- Report test results accurately
+- Fix in-scope test failures
+- Flag out-of-scope test issues
 
 Quality violations require STOP.
 
 ---
 
-## Memory usage
+## Memory Usage
 
 Memory may be used only for recall.
 Memory never overrides files.
@@ -139,20 +275,32 @@ If memory conflicts with files, ignore memory.
 
 ---
 
-## Completion rules
+## Completion Rules
+
+### Task Completion (Agent)
 
 A task is COMPLETE only if:
-- report exists on disk
-- execution state updated
-- tests executed and reported
+- PO issues NEXT gate
+- Report exists on disk
+- All AC items verified
+- Tests executed and passed
 
-If any condition fails, task is not complete.
+### Phase Completion (PO)
+
+A phase is COMPLETE only if:
+- All phase tasks complete
+- Integration tests pass
+- Phase report generated
+- DD approves phase
+
+If any condition fails, not complete.
 
 ---
 
-## Final note
+## Final Note
 
 If you are unsure:
 - STOP
-- ask the Product Owner
-- do not guess
+- PO asks the Delivery Director
+- Agent asks the Product Owner
+- Do not guess

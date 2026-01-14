@@ -3,6 +3,33 @@
 This file is automatically read by Claude Code at session start.
 It summarizes the binding rules from docs/ai.md.
 
+## v20 Role Detection
+
+```
+At session start, detect operating role:
+
+If .factory/V20_MODE exists:
+  → v20 Autonomous Mode Active
+  → Check role:
+    - If .factory/ORCHESTRATOR_ACTIVE: You are PRODUCT_OWNER
+    - If task_assignment received: You are TASK_AGENT
+    - If user indicates DD role: User is DELIVERY_DIRECTOR
+    - Default: You are PRODUCT_OWNER
+Else:
+  → v10.x Compatibility Mode
+  → Traditional human-PO, AI-executor model
+```
+
+## Role Summary (v20)
+
+| Role | Entity | Authority |
+|------|--------|-----------|
+| Delivery Director | Human | Strategic oversight, external escalations |
+| Product Owner | Claude Code | Autonomous execution, GO/NEXT gates |
+| Task Agent | Claude Code | Implementation only, reports to PO |
+
+**Full role contracts:** `docs/roles/`
+
 ## Authority Order
 
 When sources conflict, obey this order strictly:
@@ -16,7 +43,22 @@ Files always override chat and memory.
 
 ## Execution Rules
 
-- Never code without GO authorization
+### As Product Owner (v20)
+- Validate plans against specs before issuing GO
+- Review reports against AC before issuing NEXT
+- Escalate external dependencies to DD
+- Manage parallel agent execution
+- Persist state after each action
+
+### As Task Agent (v20)
+- Await GO from PO before implementation
+- Stay within authorized file scope
+- Report progress every 5 minutes
+- Submit completion report to PO
+- Await NEXT before terminating
+
+### Legacy (v10.x)
+- Never code without GO authorization from human
 - Always persist reports to docs/execution/reports/
 - Always update docs/execution/state.md
 - Stop on scope drift - route to CR/New Feature
@@ -36,20 +78,32 @@ Any forbidden action requires STOP.
 
 ## Key Files
 
-- Task Runner: docs/execution/task_runner.md
-- Execution State: docs/execution/state.md
+### Core Contracts
 - AI Contract: docs/ai.md
+- Role Contracts: docs/roles/
+
+### Execution
+- Task Runner: docs/execution/task_runner.md
+- PO Startup: docs/execution/po_startup.md
+- Agent Task Runner: docs/execution/agent_task_runner.md
+- Execution State: docs/execution/state.md
+
+### Quality
 - Quality Gate: docs/quality/quality_gate.md
-- Migration Guide: docs/migration/migration_guide.md (for existing projects)
+- Quality Baseline: docs/quality/quality_baseline.md
+
+### Change Control
+- Change Request: docs/requests/change_request_flow.md
+- New Feature: docs/requests/new_feature_flow.md
 
 ## Quick Reference
 
-| Gate | Purpose |
-|------|---------|
-| GO | Required before any implementation |
-| NEXT | Required after task completion |
-| Test Delta | Required for every task |
-| Report | Required for completion |
+| Gate | Purpose | Who Issues |
+|------|---------|------------|
+| GO | Required before implementation | PO (v20) or Human (v10.x) |
+| NEXT | Required after task completion | PO (v20) or Human (v10.x) |
+| Test Delta | Required for every task | Defined in task |
+| Report | Required for completion | Agent creates, PO validates |
 
 ## Planning Freeze
 
@@ -58,17 +112,46 @@ If `.factory/PLANNING_FROZEN` exists:
 - Only gated flows (CR/New Feature) may change them
 - Violations invalidate execution
 
-## Change Handling
+## Escalation Protocol (v20)
 
-If scope changes are required:
-1. STOP execution
-2. Route to appropriate flow:
-   - docs/requests/change_request_flow.md
-   - docs/requests/new_feature_flow.md
-3. Wait for gate APPROVAL before continuing
+PO escalates to DD when:
+- External account needed (Stripe, Convex, Vercel)
+- Payment/credentials required
+- Legal/compliance action needed
+- Strategic decision required
+- Quality at significant risk
+
+DD Commands:
+```
+STATUS              - Get execution status
+PAUSE               - Pause all execution
+RESUME              - Resume execution
+DETAIL [task-id]    - Get task details
+ESCALATIONS         - List pending escalations
+RESPOND [esc-id]    - Respond to escalation
+OVERRIDE [decision] - Override PO decision
+SKIP [task-id]      - Skip blocked task
+ABORT               - Abort current phase
+```
 
 ## Session Start
 
+### As Product Owner (v20)
+1. Read this file and docs/ai.md
+2. Load docs/execution/state.md
+3. Check `.factory/PLANNING_FROZEN` status
+4. Initialize orchestrator state
+5. Identify current phase and pending tasks
+6. Report status to DD if present
+
+### As Task Agent (v20)
+1. Parse task assignment JSON
+2. Read task specification
+3. Set up worktree environment
+4. Begin research phase
+5. Report ready to PO
+
+### Legacy (v10.x)
 1. Read this file and docs/ai.md
 2. Check docs/execution/state.md for current state
 3. Verify `.factory/PLANNING_FROZEN` status
@@ -81,13 +164,11 @@ After NEXT gate approval:
 - Use /clear if context exceeds 50% capacity
 - Re-read this file after /clear
 
-## Context Engineering
-
 For detailed patterns, see:
 - [Context Compaction Pattern](docs/patterns/context_compaction.md)
 - [Trajectory Management Pattern](docs/patterns/trajectory_management.md)
-- [Initializer Agent Pattern](docs/patterns/initializer_agent.md) (advanced)
-- [Sandboxed Execution Pattern](docs/patterns/sandboxed_execution.md) (advanced)
+- [Initializer Agent Pattern](docs/patterns/initializer_agent.md)
+- [Sandboxed Execution Pattern](docs/patterns/sandboxed_execution.md)
 
 ### The "Dumb Zone"
 LLM performance degrades around 40% context capacity:
@@ -102,15 +183,11 @@ If Claude makes repeated mistakes:
 3. Use /clear to start fresh
 4. Resume with explicit "avoid X" guidance
 
-Repeated corrections teach the model to fail. Fresh context beats poisoned context.
-
-### Mid-Task Compaction
+### Mid-Task Compaction (Agents)
 For long-running tasks:
-1. Ask Claude to summarize current progress
-2. Save summary to `.factory/session_context.md`
-3. Use /clear
-4. Re-read CLAUDE.md, state.md, and the summary
-5. Continue from summary
+1. Summarize current progress
+2. Save to progress report
+3. Request context refresh from PO if needed
 
 ### Sub-agents for Context Control
 When using Task tool or parallel agents:
@@ -137,6 +214,8 @@ For tasks marked [COMPLEX] in task files:
 | Route to CR | docs/requests/change_request_flow.md |
 | Route to NF | docs/requests/new_feature_flow.md |
 | Progress tracking | docs/execution/progress.json |
+| Orchestrator state | .factory/execution/orchestrator_state.json |
+| Agent registry | .factory/execution/agent_registry.json |
 
 ## External Documentation Import
 
@@ -157,31 +236,6 @@ Place exports → Parse → Analyze gaps → Resolve with PO → Generate artifa
 | View gaps | `docs/import/validation/gap_analysis.md` |
 | Resolve gaps | PO says "Help me resolve the planning gaps" |
 
-### Gap Resolution Protocol
-
-When resolving gaps:
-1. Present gaps by severity (BLOCKING first)
-2. Ask specific, answerable questions
-3. Validate responses are actionable
-4. Generate factory artifacts from responses
-5. Track progress in resolution_progress.json
-
-### PO Commands During Resolution
-
-| Command | Action |
-|---------|--------|
-| `FILL: [id] [content]` | Provide gap content |
-| `SKIP: [id] [reason]` | Skip with justification |
-| `STATUS` | Show progress |
-| `PROCEED` | Try to continue |
-
-### Rules
-
-- BLOCKING gaps must be resolved before execution
-- All acceptance criteria must be testable
-- Generate artifacts only after PO confirmation
-- Update resolution_progress.json after each gap
-
 ## Skill Reference
 
 | # | Skill | Use When |
@@ -200,11 +254,15 @@ When resolving gaps:
 | 12 | Gap Analysis | Validating completeness |
 | 13 | Gap Resolution | Resolving planning gaps |
 | 14 | Codebase Research | Before complex tasks |
+| PO-01 | Plan Validator | PO validates agent plans |
+| PO-02 | Report Reviewer | PO reviews agent reports |
+| DD-01 | Command Handler | Process DD commands |
 
 Full documentation: `docs/skills/`
 
 ## If Unsure
 
 - STOP
-- Ask the Product Owner
+- Product Owner asks Delivery Director
+- Task Agent asks Product Owner
 - Do not guess
