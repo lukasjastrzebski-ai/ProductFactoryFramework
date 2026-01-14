@@ -3,6 +3,50 @@
 This file is automatically read by Claude Code at session start.
 It summarizes the binding rules from docs/ai.md.
 
+---
+
+## For Delivery Directors (v20 Mode)
+
+If you're the human using v20, here's what happens at session start:
+
+### What You'll See
+
+```
+=== ProductFactoryFramework v20 Detected ===
+Mode: v20 Autonomous
+Role: DELIVERY_DIRECTOR
+
+Loading planning artifacts...
+Phase: PHASE-01 (X tasks pending)
+Escalations: 0
+
+Ready. Issue STATUS or let PO proceed.
+```
+
+### Your First Actions
+
+1. **Check status:** Type `STATUS` to see current execution state
+2. **Check escalations:** Type `ESCALATIONS` to see if anything needs your input
+3. **Let PO work:** Or just wait - PO will begin autonomous execution
+
+### Quick Commands
+
+| Command | Purpose |
+|---------|---------|
+| `STATUS` | See execution status |
+| `PAUSE` | Pause execution |
+| `RESUME` | Resume execution |
+| `ESCALATIONS` | View pending items needing your input |
+| `DETAIL TASK-XXX` | Get details on a specific task |
+
+### Need Help?
+
+- **Full guide:** `docs/V20_USER_GUIDE.md`
+- **Escalation help:** `docs/execution/escalation_response_guide.md`
+- **Disaster recovery:** `docs/execution/dd_disaster_recovery.md`
+
+---
+
 ## v20 Role Detection
 
 ```

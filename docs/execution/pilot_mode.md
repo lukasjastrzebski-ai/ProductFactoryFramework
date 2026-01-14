@@ -14,17 +14,38 @@ Pilot mode enables running v20 with enhanced DD oversight for testing and valida
 
 ## Pilot Mode Features
 
-### Enhanced Visibility
+Think of pilot mode as "v20 with training wheels" - you get autonomous execution with enhanced visibility and easy intervention.
 
-- All PO decisions shown to DD
-- Verbose logging enabled
-- Step-by-step confirmation available
+### What Pilot Mode Does
 
-### DD Checkpoints
+| Feature | Description |
+|---------|-------------|
+| **Verbose Logging** | Every PO decision printed to console with reasoning |
+| **Decision Visibility** | See what PO is thinking before it acts |
+| **Easy Abort** | Stop execution at any time with ABORT |
+| **Status Updates** | More frequent status output |
 
-- Optional confirmation before GO
-- Optional confirmation before NEXT
-- Batch completion review
+### What Pilot Mode Does NOT Change
+
+| Aspect | Behavior |
+|--------|----------|
+| GO/NEXT gates | Still automated (unless you enable confirmations) |
+| Parallel execution | Still runs multiple agents |
+| Escalations | Still auto-pause on BLOCKING |
+| State management | Same as full autonomous |
+
+### When to Use Pilot Mode
+
+**Use pilot mode when:**
+- First time using v20
+- Testing new project with v20
+- Want to observe PO decision-making
+- Learning how the system works
+
+**Switch to full autonomous when:**
+- Comfortable with PO decisions
+- Execution is stable
+- Want maximum speed
 
 ### Easy Rollback
 

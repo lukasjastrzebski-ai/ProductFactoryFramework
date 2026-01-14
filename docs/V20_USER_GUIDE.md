@@ -32,6 +32,51 @@ You no longer need to:
 
 ---
 
+## Why Migrate to v20?
+
+### The Problem with v10.x
+
+In v10.x, you were the bottleneck:
+- Every task waited for your GO approval
+- Every completion waited for your NEXT approval
+- Parallelization required manual coordination
+- Your availability determined execution speed
+
+### What v20 Solves
+
+| Before (v10.x) | After (v20) |
+|----------------|-------------|
+| 2-3 hours/day approving tasks | 30 min/day reviewing phases |
+| Sequential execution | Automatic parallelization |
+| Inline credential handling | Structured escalation queue |
+| Context switching per task | Strategic oversight only |
+
+### Real Impact
+
+**Time Savings:**
+- Phase with 10 tasks: v10.x = ~5 hours your time → v20 = ~30 minutes
+- External dependencies: handled asynchronously via escalation queue
+
+**Quality Improvement:**
+- Consistent validation (PO checks every plan)
+- No rushed approvals (AI doesn't get tired)
+- Complete audit trail
+
+**Faster Delivery:**
+- 30-40% speedup from automatic parallelization
+- No waiting for human availability
+- Continuous execution while you focus elsewhere
+
+### You Still Have Full Control
+
+- Override any PO decision with `OVERRIDE`
+- Pause execution anytime with `PAUSE`
+- Skip problematic tasks with `SKIP`
+- Abort entire phase with `ABORT`
+- Revert to v10.x mode instantly
+
+---
+
 ## Getting Started
 
 ### 1. Activate v20 Mode
@@ -44,11 +89,49 @@ echo "20.0" > .factory/V20_MODE
 echo "20.0" > .factory/factory_version.txt
 ```
 
-### 2. Start a Session
+### 2. Pre-Execution Checklist
+
+Before starting your first v20 session, verify:
+
+**Planning Complete:**
+- [ ] `.factory/PLANNING_FROZEN` exists
+- [ ] `plan/phases/PHASE-01.md` or similar exists
+- [ ] `plan/tasks/` directory has task files
+
+**Factory Configured:**
+- [ ] `.factory/V20_MODE` contains "20.0"
+- [ ] `.factory/factory_version.txt` contains "20.0"
+
+**Optional but Recommended:**
+- [ ] Enable pilot mode: `echo "pilot" > .factory/V20_PILOT`
+- [ ] Review `docs/execution/state.md` for current state
+
+**Verification Commands:**
+```bash
+# Check all prerequisites
+cat .factory/PLANNING_FROZEN      # Should exist
+cat .factory/V20_MODE             # Should show "20.0"
+ls plan/tasks/                    # Should list TASK-*.md files
+```
+
+### 3. Start a Session
 
 Start Claude Code as usual. The system will detect v20 mode and operate as Product Owner.
 
-### 3. Monitor Execution
+**What You'll See:**
+```
+=== ProductFactoryFramework v20 Detected ===
+Mode: v20 Autonomous
+Role: DELIVERY_DIRECTOR
+
+Loading planning artifacts...
+Phase: PHASE-01 (X tasks pending)
+Escalations: 0
+
+Ready. Issue STATUS or let PO proceed.
+```
+
+### 4. Monitor Execution
 
 Use commands to monitor progress:
 
@@ -120,6 +203,25 @@ SKIP TASK-XXX
 | SKIP | `SKIP TASK-001` | Skip blocked task |
 | OVERRIDE | `OVERRIDE` | Override PO decision |
 | ABORT | `ABORT` | Abort phase |
+
+### Command Syntax Rules
+
+**Case Sensitivity:**
+- All commands must be UPPERCASE: `STATUS` works, `status` does not
+- Task IDs use format `TASK-XXX`: `DETAIL TASK-001` not `DETAIL task-001`
+- Escalation IDs use format `ESC-XXX`: `RESPOND ESC-001` not `RESPOND 1`
+
+**Formatting:**
+- No punctuation needed: `PAUSE` not `PAUSE.` or `PAUSE!`
+- Whitespace is flexible: `STATUS`, ` STATUS `, `  STATUS  ` all work
+- One command per message
+
+**Common Errors:**
+```
+status          → ERROR: Command not recognized (use uppercase)
+DETAIL 001      → ERROR: Invalid task format (use TASK-001)
+RESPOND 1       → ERROR: Invalid escalation format (use ESC-001)
+```
 
 ---
 
