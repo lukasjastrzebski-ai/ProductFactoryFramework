@@ -1,6 +1,21 @@
 # Product Factory Framework
 
-Version: v10.2
+**Current Version:** v20.0 | [v10.2 Compatibility Mode Available](#v10x-compatibility)
+
+---
+
+## Version Selection Guide
+
+| Version | Mode | Your Role | Best For |
+|---------|------|-----------|----------|
+| **v20** | Autonomous | Delivery Director | Production projects, hands-off execution |
+| **v10.x** | Manual | Product Owner | Learning, high-control scenarios |
+
+**New to v20?** → [V20 User Guide](docs/V20_USER_GUIDE.md)
+**Migrating from v10.x?** → [Migration Guide](docs/migration/v10_to_v20_migration.md)
+**Want manual control?** → Continue reading below for v10.x mode
+
+---
 
 ## What is the Product Factory?
 
@@ -144,6 +159,72 @@ When sources conflict, this order applies:
 - [Factory Reference](docs/FACTORY_REFERENCE.md) - Deep reference documentation
 - [Extension Guide](docs/EXTENSION_GUIDE.md) - How to extend the factory safely
 - [Known Limitations](docs/KNOWN_LIMITATIONS.md) - What the factory does and does not do
+
+---
+
+## v20 Autonomous Mode
+
+v20 introduces autonomous execution where Claude Code operates as Product Owner, managing the entire execution phase while you serve as Delivery Director.
+
+### What Changes in v20
+
+| Aspect | v10.x (Manual) | v20 (Autonomous) |
+|--------|----------------|------------------|
+| Your role | Product Owner | Delivery Director |
+| GO/NEXT gates | You approve each task | AI approves tasks |
+| Parallel execution | Manual | Automatic |
+| Your time commitment | High (every task) | Low (phase reviews) |
+| External dependencies | You handle inline | Escalated to you |
+
+### Quick Start for v20
+
+```bash
+# Enable v20 mode
+echo "20.0" > .factory/V20_MODE
+echo "20.0" > .factory/factory_version.txt
+
+# Optional: Enable pilot mode for first-time use
+echo "pilot" > .factory/V20_PILOT
+```
+
+### v20 Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [V20 User Guide](docs/V20_USER_GUIDE.md) | Complete guide for Delivery Directors |
+| [v20 Vision](docs/v20_vision.md) | Architecture and design rationale |
+| [Migration Guide](docs/migration/v10_to_v20_migration.md) | Upgrading from v10.x |
+| [Compatibility Mode](docs/execution/compatibility_mode.md) | Running v10.x behavior in v20 |
+
+### DD Commands (v20)
+
+| Command | Purpose |
+|---------|---------|
+| `STATUS` | Current execution status |
+| `PAUSE` / `RESUME` | Control execution |
+| `ESCALATIONS` | View pending items needing your input |
+| `DETAIL TASK-XXX` | Get task details |
+| `SKIP TASK-XXX` | Skip blocked task |
+
+---
+
+## v10.x Compatibility
+
+v10.x mode is available for projects requiring manual control:
+
+```bash
+# Disable v20, use v10.x mode
+rm .factory/V20_MODE
+echo "10.2" > .factory/factory_version.txt
+```
+
+In v10.x mode:
+- You are the Product Owner
+- You approve every GO/NEXT gate
+- Execution is sequential by default
+- Full manual control preserved
+
+---
 
 ## License and Support
 

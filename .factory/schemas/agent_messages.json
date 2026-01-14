@@ -1,0 +1,248 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent Message Schemas",
+  "description": "JSON schemas for v20 Agent-PO messaging protocol",
+  "definitions": {
+    "message_base": {
+      "type": "object",
+      "required": ["message_type", "agent_id", "task_id", "timestamp"],
+      "properties": {
+        "message_type": {
+          "type": "string"
+        },
+        "agent_id": {
+          "type": "string",
+          "pattern": "^agent-[a-z0-9]+$"
+        },
+        "task_id": {
+          "type": "string",
+          "pattern": "^TASK-[A-Z0-9-]+$"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "plan_submission": {
+      "allOf": [
+        { "$ref": "#/definitions/message_base" },
+        {
+          "type": "object",
+          "required": ["plan"],
+          "properties": {
+            "message_type": { "const": "PLAN_SUBMISSION" },
+            "plan": {
+              "type": "object",
+              "required": ["approach", "ac_mapping", "files_to_modify"],
+              "properties": {
+                "approach": { "type": "string" },
+                "ac_mapping": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["ac_id", "implementation"],
+                    "properties": {
+                      "ac_id": { "type": "string" },
+                      "implementation": { "type": "string" },
+                      "file": { "type": "string" },
+                      "line_estimate": { "type": "string" }
+                    }
+                  }
+                },
+                "files_to_modify": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["path", "changes"],
+                    "properties": {
+                      "path": { "type": "string" },
+                      "changes": { "type": "string" }
+                    }
+                  }
+                },
+                "test_approach": {
+                  "type": "object",
+                  "properties": {
+                    "unit_tests": { "type": "array", "items": { "type": "string" } },
+                    "integration_tests": { "type": "array", "items": { "type": "string" } }
+                  }
+                }
+              }
+            },
+            "questions": { "type": "array", "items": { "type": "string" } },
+            "revision": { "type": "integer", "minimum": 1 }
+          }
+        }
+      ]
+    },
+    "progress_update": {
+      "allOf": [
+        { "$ref": "#/definitions/message_base" },
+        {
+          "type": "object",
+          "required": ["status", "progress_percent", "current_activity"],
+          "properties": {
+            "message_type": { "const": "PROGRESS_UPDATE" },
+            "status": {
+              "type": "string",
+              "enum": ["initializing", "researching", "planning", "awaiting_go",
+                       "implementing", "testing", "reporting", "awaiting_next",
+                       "fixing", "blocked"]
+            },
+            "progress_percent": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 100
+            },
+            "current_activity": { "type": "string" },
+            "files_modified": { "type": "array", "items": { "type": "string" } },
+            "issues": { "type": "array", "items": { "type": "string" } },
+            "eta_minutes": { "type": "integer" }
+          }
+        }
+      ]
+    },
+    "completion_report": {
+      "allOf": [
+        { "$ref": "#/definitions/message_base" },
+        {
+          "type": "object",
+          "required": ["summary", "ac_verification", "test_results", "files_changed"],
+          "properties": {
+            "message_type": { "const": "COMPLETION_REPORT" },
+            "summary": {
+              "type": "object",
+              "required": ["started_at", "completed_at"],
+              "properties": {
+                "started_at": { "type": "string", "format": "date-time" },
+                "completed_at": { "type": "string", "format": "date-time" },
+                "duration_minutes": { "type": "integer" }
+              }
+            },
+            "ac_verification": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["ac_id", "status"],
+                "properties": {
+                  "ac_id": { "type": "string" },
+                  "status": { "type": "string", "enum": ["PASS", "FAIL", "PARTIAL"] },
+                  "evidence": { "type": "string" },
+                  "tested": { "type": "boolean" }
+                }
+              }
+            },
+            "test_results": {
+              "type": "object",
+              "required": ["passed", "failed"],
+              "properties": {
+                "passed": { "type": "integer" },
+                "failed": { "type": "integer" },
+                "skipped": { "type": "integer" },
+                "details": { "type": "array" }
+              }
+            },
+            "files_changed": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["path", "action"],
+                "properties": {
+                  "path": { "type": "string" },
+                  "action": { "type": "string", "enum": ["created", "modified", "deleted"] },
+                  "lines_added": { "type": "integer" },
+                  "lines_removed": { "type": "integer" }
+                }
+              }
+            },
+            "issues": { "type": "array", "items": { "type": "string" } },
+            "recommendations": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      ]
+    },
+    "go_directive": {
+      "type": "object",
+      "required": ["message_type", "task_id", "agent_id", "timestamp", "status", "authorization"],
+      "properties": {
+        "message_type": { "const": "GO_DIRECTIVE" },
+        "task_id": { "type": "string" },
+        "agent_id": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "status": { "const": "GO" },
+        "validation": {
+          "type": "object",
+          "properties": {
+            "plan_validated": { "type": "boolean" },
+            "ac_coverage": { "type": "string" },
+            "file_scope": { "type": "string" },
+            "test_delta": { "type": "string" }
+          }
+        },
+        "authorization": {
+          "type": "object",
+          "required": ["authorized_files"],
+          "properties": {
+            "authorized_files": { "type": "array", "items": { "type": "string" } },
+            "timeout_minutes": { "type": "integer" }
+          }
+        },
+        "message": { "type": "string" }
+      }
+    },
+    "next_directive": {
+      "type": "object",
+      "required": ["message_type", "task_id", "agent_id", "timestamp", "status"],
+      "properties": {
+        "message_type": { "const": "NEXT_DIRECTIVE" },
+        "task_id": { "type": "string" },
+        "agent_id": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "status": { "const": "NEXT" },
+        "validation": { "type": "object" },
+        "summary": { "type": "object" },
+        "message": { "type": "string" },
+        "cleanup": { "type": "object" }
+      }
+    },
+    "fix_directive": {
+      "type": "object",
+      "required": ["message_type", "task_id", "agent_id", "timestamp", "status", "validation"],
+      "properties": {
+        "message_type": { "const": "FIX_DIRECTIVE" },
+        "task_id": { "type": "string" },
+        "agent_id": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "status": { "const": "FIX" },
+        "validation": {
+          "type": "object",
+          "required": ["issues"],
+          "properties": {
+            "issues": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["type", "message"],
+                "properties": {
+                  "type": { "type": "string" },
+                  "message": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "retry": {
+          "type": "object",
+          "properties": {
+            "count": { "type": "integer" },
+            "max": { "type": "integer" },
+            "allowed": { "type": "boolean" }
+          }
+        },
+        "guidance": { "type": "string" },
+        "message": { "type": "string" }
+      }
+    }
+  }
+}
