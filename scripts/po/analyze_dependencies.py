@@ -27,6 +27,7 @@ class Task:
     file_path: str
     phase: str
     dependencies: List[str]
+    phase_deps: List[str]  # Phase dependencies (PHASE-XX)
     files_modified: List[str]
     test_delta: Dict[str, List[str]]
     priority: int
@@ -66,6 +67,32 @@ def find_factory_root() -> Path:
     return Path.cwd()
 
 
+def find_task_files(factory_root: Path) -> List[Path]:
+    """Find all task files, checking both plan/tasks/ and plan/ directories"""
+    task_files = []
+
+    # Check plan/tasks/ first (preferred structure)
+    tasks_dir = factory_root / "plan" / "tasks"
+    if tasks_dir.exists():
+        task_files.extend(tasks_dir.glob("TASK-*.md"))
+
+    # Also check plan/ directly (alternate structure)
+    plan_dir = factory_root / "plan"
+    if plan_dir.exists():
+        task_files.extend(plan_dir.glob("TASK-*.md"))
+
+    # Deduplicate by task ID
+    seen = set()
+    unique_files = []
+    for f in task_files:
+        task_id = f.stem.upper()
+        if task_id not in seen:
+            seen.add(task_id)
+            unique_files.append(f)
+
+    return unique_files
+
+
 def parse_task_file(file_path: Path) -> Optional[Task]:
     """Parse a task markdown file and extract metadata"""
     try:
@@ -78,16 +105,22 @@ def parse_task_file(file_path: Path) -> Optional[Task]:
         title_match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
         title = title_match.group(1) if title_match else task_id
 
-        # Extract phase
-        phase_match = re.search(r'Phase:\s*(\S+)', content, re.IGNORECASE)
+        # Extract phase (handles **Phase:** PHASE-XX format)
+        phase_match = re.search(r'\*?\*?Phase:\*?\*?\s*(PHASE-\d+|\S+)', content, re.IGNORECASE)
         phase = phase_match.group(1) if phase_match else "UNKNOWN"
 
         # Extract dependencies
-        deps_match = re.search(r'Dependencies:\s*(.+?)(?:\n\n|\n#|$)', content, re.IGNORECASE | re.DOTALL)
+        deps_match = re.search(r'##\s*Dependencies\s*\n+(.+?)(?:\n\n|\n#|$)', content, re.IGNORECASE | re.DOTALL)
         dependencies = []
+        phase_deps = []
         if deps_match:
             deps_text = deps_match.group(1)
-            dependencies = re.findall(r'TASK-[A-Z0-9-]+', deps_text)
+            # Check for "None" or empty dependencies
+            if not re.search(r'^\s*-?\s*None', deps_text, re.IGNORECASE):
+                # Extract explicit task dependencies
+                dependencies = re.findall(r'TASK-\d+', deps_text)
+                # Extract phase dependencies (PHASE-XX means all tasks in that phase)
+                phase_deps = re.findall(r'PHASE-\d+', deps_text)
 
         # Extract files to be modified
         files_match = re.search(r'Files?(?:\s+to\s+(?:modify|change|update|create))?\s*:\s*(.+?)(?:\n\n|\n#|$)',
@@ -120,6 +153,7 @@ def parse_task_file(file_path: Path) -> Optional[Task]:
             file_path=str(file_path),
             phase=phase,
             dependencies=dependencies,
+            phase_deps=phase_deps,
             files_modified=files_modified,
             test_delta=test_delta,
             priority=priority,
@@ -155,6 +189,33 @@ def detect_implicit_dependencies(tasks: Dict[str, Task]) -> Dict[str, Set[str]]:
     return implicit_deps
 
 
+def resolve_phase_dependencies(tasks: Dict[str, Task]) -> Dict[str, Set[str]]:
+    """Resolve phase dependencies into task dependencies.
+
+    If TASK-007 depends on PHASE-01, it depends on all tasks in PHASE-01.
+    """
+    # Build phase-to-tasks mapping
+    phase_tasks: Dict[str, Set[str]] = {}
+    for task_id, task in tasks.items():
+        phase = task.phase
+        if phase not in phase_tasks:
+            phase_tasks[phase] = set()
+        phase_tasks[phase].add(task_id)
+
+    # Resolve phase deps
+    resolved: Dict[str, Set[str]] = {}
+    for task_id, task in tasks.items():
+        resolved[task_id] = set()
+        for phase_dep in task.phase_deps:
+            if phase_dep in phase_tasks:
+                # Add all tasks from the dependent phase
+                resolved[task_id].update(phase_tasks[phase_dep])
+                # Don't depend on self
+                resolved[task_id].discard(task_id)
+
+    return resolved
+
+
 def build_dependency_graph(tasks: Dict[str, Task], phase_filter: Optional[str] = None) -> Dict[str, Set[str]]:
     """Build complete dependency graph including implicit dependencies"""
     # Filter by phase if specified
@@ -166,7 +227,15 @@ def build_dependency_graph(tasks: Dict[str, Task], phase_filter: Optional[str] =
     for task_id, task in tasks.items():
         graph[task_id] = set(d for d in task.dependencies if d in tasks)
 
-    # Add implicit dependencies
+    # Add phase-resolved dependencies
+    phase_resolved = resolve_phase_dependencies(tasks)
+    for task_id, deps in phase_resolved.items():
+        if task_id in graph:
+            # Only add deps that are in our filtered tasks
+            valid_deps = deps.intersection(set(tasks.keys()))
+            graph[task_id].update(valid_deps)
+
+    # Add implicit dependencies (file conflicts)
     implicit = detect_implicit_dependencies(tasks)
     for task_id, deps in implicit.items():
         if task_id in graph:
@@ -271,15 +340,16 @@ def identify_parallel_groups(tasks: Dict[str, Task], graph: Dict[str, Set[str]],
 def analyze(phase: Optional[str] = None, output_file: Optional[str] = None) -> ExecutionGraph:
     """Main analysis function"""
     factory_root = find_factory_root()
-    tasks_dir = factory_root / "plan" / "tasks"
+
+    # Find all task files (checks both plan/tasks/ and plan/)
+    task_files = find_task_files(factory_root)
 
     # Parse all task files
     tasks: Dict[str, Task] = {}
-    if tasks_dir.exists():
-        for task_file in tasks_dir.glob("*.md"):
-            task = parse_task_file(task_file)
-            if task:
-                tasks[task.task_id] = task
+    for task_file in task_files:
+        task = parse_task_file(task_file)
+        if task:
+            tasks[task.task_id] = task
 
     # Build dependency graph
     graph = build_dependency_graph(tasks, phase)

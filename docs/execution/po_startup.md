@@ -219,6 +219,57 @@ After successful startup, the PO should:
 
 ---
 
+## Continuous Monitoring
+
+During execution, the PO should monitor agent health:
+
+### Timeout Detection
+
+Run periodically to detect timed-out agents:
+
+```bash
+# One-shot check
+./scripts/po/check_agent_timeouts.sh
+
+# Continuous monitoring (every 5 minutes)
+./scripts/po/check_agent_timeouts.sh --loop 300
+
+# With escalation notifications
+./scripts/po/check_agent_timeouts.sh --notify
+```
+
+### Agent Monitoring Dashboard
+
+Monitor all agents in real-time:
+
+```bash
+# Show current status
+./scripts/po/monitor_agents.sh status
+
+# Real-time dashboard (updates every 30s)
+./scripts/po/monitor_agents.sh dashboard --loop 30
+
+# Run health checks
+./scripts/po/monitor_agents.sh check
+
+# Find stale agents (no progress in 10 min)
+./scripts/po/monitor_agents.sh stale
+
+# Cleanup completed/failed agents
+./scripts/po/monitor_agents.sh cleanup
+```
+
+### Recommended Monitoring Schedule
+
+| Check | Frequency | Script |
+|-------|-----------|--------|
+| Timeout detection | Every 5 min | `check_agent_timeouts.sh --loop 300` |
+| Stale agent check | Every 10 min | `monitor_agents.sh stale` |
+| Health check | On demand | `monitor_agents.sh check` |
+| Cleanup | After phase completion | `monitor_agents.sh cleanup` |
+
+---
+
 ## Related Documentation
 
 - [Product Owner Contract](../roles/product_owner.md)
