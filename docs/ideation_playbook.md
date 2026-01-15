@@ -183,9 +183,15 @@ Actions:
 - finalize docs/ai.md
 - create .factory/STAGE_7_COMPLETE
 - create .factory/PLANNING_FROZEN
+- run ./scripts/po/generate_permissions.sh
+- commit .claude/settings.local.json
+
+Output:
+- .claude/settings.local.json (auto-approved commands for execution)
 
 Rules:
 - no planning edits after freeze without gated flows
+- permissions must be reviewed before commit
 
 ---
 

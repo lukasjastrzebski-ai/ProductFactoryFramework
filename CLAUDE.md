@@ -45,6 +45,19 @@ Ready. Issue STATUS or let PO proceed.
 - **Escalation help:** `docs/execution/escalation_response_guide.md`
 - **Disaster recovery:** `docs/execution/dd_disaster_recovery.md`
 
+### Reduce Manual Approvals
+
+To auto-approve common commands during execution:
+
+```bash
+# Generate permissions based on your project
+./scripts/po/generate_permissions.sh
+
+# Or manually add to .claude/settings.local.json
+```
+
+See: `docs/execution/permissions_setup.md`
+
 ---
 
 ## v20 Role Detection
